@@ -1,18 +1,89 @@
 'use strict'
 
 const db = require('../server/db')
-const {User} = require('../server/db/models')
+const {
+  Conversation,
+  User,
+  Message,
+  Participant
+} = require('../server/db/models')
 
 async function seed() {
   await db.sync({force: true})
   console.log('db synced!')
 
-  const users = await Promise.all([
-    User.create({email: 'cody@email.com', password: '123'}),
-    User.create({email: 'murphy@email.com', password: '123'})
-  ])
+  const conversations = [{id: 1}, {id: 2}, {id: 3}]
 
-  console.log(`seeded ${users.length} users`)
+  const users = [
+    {
+      email: 'cody@email.com',
+      password: '123',
+      firstName: 'Cody',
+      lastName: 'Carr'
+    },
+    {
+      email: 'murphy@email.com',
+      password: '123',
+      firstName: 'Murphy',
+      lastName: 'Mulligan'
+    },
+    {
+      email: 'bob@email.com',
+      password: '123',
+      firstName: 'Bob',
+      lastName: 'Barnes'
+    },
+    {
+      email: 'john@email.com',
+      password: '123',
+      firstName: 'John',
+      lastName: 'Jacobs'
+    },
+    {
+      email: 'jill@email.com',
+      password: '123',
+      firstName: 'Jill',
+      lastName: 'Johnson'
+    },
+    {
+      email: 'sally@email.com',
+      password: '123',
+      firstName: 'Sally',
+      lastName: 'Smith'
+    }
+  ]
+
+  const participants = [
+    {userId: 1, conversationId: 1},
+    {userId: 2, conversationId: 1},
+    {userId: 3, conversationId: 1},
+    {userId: 5, conversationId: 2},
+    {userId: 3, conversationId: 2},
+    {userId: 2, conversationId: 2},
+    {userId: 6, conversationId: 3},
+    {userId: 3, conversationId: 3},
+    {userId: 2, conversationId: 3}
+  ]
+
+  const messages = [
+    {content: 'how was your day?', userId: 1, conversationId: 1},
+    {content: 'do you want to run?', userId: 2, conversationId: 1},
+    {content: 'lets run in central park', userId: 3, conversationId: 1},
+    {content: 'Can we reschedule our run?', userId: 2, conversationId: 2},
+    {content: `I'm on my way!`, userId: 6, conversationId: 3},
+    {content: 'See you soon!', userId: 3, conversationId: 3},
+    {content: 'Hey! Meet at 2?', userId: 2, conversationId: 3}
+  ]
+
+  const createdConversations = await Conversation.bulkCreate(conversations)
+  const createdUsers = await User.bulkCreate(users)
+  const createdParticipants = await Participant.bulkCreate(participants)
+  const createdMessages = await Message.bulkCreate(messages)
+
+  console.log(`seeded ${createdConversations.length} conversations`)
+  console.log(`seeded ${createdUsers.length} users`)
+  console.log(`seeded ${createdParticipants.length} participants`)
+  console.log(`seeded ${createdMessages.length} messages`)
   console.log(`seeded successfully`)
 }
 
