@@ -1,13 +1,13 @@
 const User = require('./user')
 const Message = require('./message')
 const Conversation = require('./coversation')
-const Participant = require('./participant')
+//const Participant = require('./participant')
 
 /* Associations for Models */
 
 // Participant Through Table
-User.belongsToMany(Conversation, {through: Participant, as: 'threads'})
-Conversation.belongsToMany(User, {through: Participant, as: 'participants'})
+User.belongsToMany(Conversation, {through: 'participants', as: 'threads'})
+Conversation.belongsToMany(User, {through: 'participants', as: 'threads'})
 
 // Messages Through Table
 User.belongsToMany(Conversation, {through: Message, as: 'messages'})
@@ -22,6 +22,6 @@ Conversation.belongsToMany(User, {through: Message, as: 'messages'})
 module.exports = {
   User,
   Message,
-  Conversation,
-  Participant
+  Conversation
+  //Participant
 }

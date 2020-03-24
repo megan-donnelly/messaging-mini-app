@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 const db = require('../db')
 const Op = Sequelize.Op
 const User = require('./user')
-const Participant = require('./participant')
+//const Participant = require('./participant')
 const Message = require('./message')
 
 const Conversation = db.define('conversation', {
@@ -23,18 +23,35 @@ module.exports = Conversation
  * classMethods
  */
 Conversation.getMsgThreads = function(userId) {
+  // get all convos where user is a participant
   return Conversation.findAll({
     include: [
       {
         model: User,
-        through: Participant,
-        as: 'participants',
-        attributes: ['id', 'firstName', 'lastName'],
+        through: 'participants',
+        as: 'threads',
         where: {
-          id: {
-            [Op.ne]: [userId]
-          }
+          id: userId
         }
+      }
+    ]
+  })
+}
+
+Conversation.getParticipants = function(convoIds) {
+  // Get all participants for a set of convo ids
+  return Conversation.findAll({
+    where: {
+      id: {
+        [Op.in]: convoIds
+      }
+    },
+    include: [
+      {
+        model: User,
+        through: 'participants',
+        as: 'threads',
+        attributes: ['id', 'firstName', 'lastName']
       }
     ],
     attributes: ['id', 'updatedAt', 'mostRecent'],

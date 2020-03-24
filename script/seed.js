@@ -4,8 +4,8 @@ const db = require('../server/db')
 const {
   Conversation,
   User,
-  Message,
-  Participant
+  Message
+  //Participant
 } = require('../server/db/models')
 
 async function seed() {
@@ -52,7 +52,7 @@ async function seed() {
       lastName: 'Smith'
     }
   ]
-
+  /*
   const participants = [
     {userId: 1, conversationId: 1},
     {userId: 2, conversationId: 1},
@@ -64,7 +64,7 @@ async function seed() {
     {userId: 3, conversationId: 3},
     {userId: 2, conversationId: 3}
   ]
-
+*/
   const messages = [
     {content: 'how was your day?', userId: 1, conversationId: 1},
     {content: 'do you want to run?', userId: 2, conversationId: 1},
@@ -75,15 +75,41 @@ async function seed() {
     {content: 'Hey! Meet at 2?', userId: 2, conversationId: 3}
   ]
 
-  const createdConversations = await Conversation.bulkCreate(conversations)
-  const createdUsers = await User.bulkCreate(users)
-  const createdParticipants = await Participant.bulkCreate(participants)
-  const createdMessages = await Message.bulkCreate(messages)
+  const convo1 = await Conversation.create(conversations[0])
+  const convo2 = await Conversation.create(conversations[1])
+  const convo3 = await Conversation.create(conversations[2])
 
-  console.log(`seeded ${createdConversations.length} conversations`)
-  console.log(`seeded ${createdUsers.length} users`)
-  console.log(`seeded ${createdParticipants.length} participants`)
-  console.log(`seeded ${createdMessages.length} messages`)
+  const user1 = await User.create(users[0])
+  const user2 = await User.create(users[1])
+  const user3 = await User.create(users[2])
+  const user4 = await User.create(users[3])
+  const user5 = await User.create(users[4])
+  const user6 = await User.create(users[5])
+
+  const msg1 = await Message.create(messages[0])
+  const msg2 = await Message.create(messages[1])
+  const msg3 = await Message.create(messages[2])
+  const msg4 = await Message.create(messages[3])
+  const msg5 = await Message.create(messages[4])
+  const msg6 = await Message.create(messages[5])
+  const msg7 = await Message.create(messages[6])
+
+  await user1.addThread(convo1)
+  await user2.addThreads([convo1, convo2, convo3])
+  await user3.addThreads([convo1, convo2, convo3])
+  await user4.addThread(convo1)
+  await user5.addThread(convo2)
+  await user6.addThread(convo3)
+
+  //const createdConversations = await Conversation.bulkCreate(conversations)
+  //const createdUsers = await User.bulkCreate(users)
+  //const createdParticipants = await Participant.bulkCreate(participants)
+  //const createdMessages = await Message.bulkCreate(messages)
+
+  //console.log(`seeded ${createdConversations.length} conversations`)
+  //console.log(`seeded ${createdUsers.length} users`)
+  // console.log(`seeded ${createdParticipants.length} participants`)
+  //console.log(`seeded ${createdMessages.length} messages`)
   console.log(`seeded successfully`)
 }
 

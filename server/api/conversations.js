@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {Conversation, User, Participant} = require('../db/models')
+const {Conversation, User} = require('../db/models')
 module.exports = router
 
 // GET /api/conversations
@@ -8,9 +8,10 @@ router.get('/', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.id)
     if (user) {
-      let conversations = await Conversation.getMsgThreads(user.id)
-      //let conversations = await user.getThreads()
-      res.send(conversations)
+      let threads = await Conversation.getMsgThreads(user.id)
+      let convoIds = threads.map(row => row.id)
+      let threadParticipants = await Conversation.getParticipants(convoIds)
+      res.send(threadParticipants)
     } else {
       res.sendStatus(404)
     }
